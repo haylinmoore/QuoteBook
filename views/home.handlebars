@@ -1,0 +1,14 @@
+<div class="row justify-content-center row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+{{#each data}}
+<div class="col  align-items-stretch d-flex" style="margin-top: 24px;">
+    <div class="card">
+  <div class="card-body">
+    <p class="card-text">{{this.value}}</p>
+  </div>
+    <div class="card-footer">
+        <a href="/q/?author={{this.author}}" target="_blank">{{this.author}}</a>
+    </div>
+    </div>
+</div>
+{{/each}}
+</div>
