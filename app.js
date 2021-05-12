@@ -39,6 +39,7 @@ async function set(value, author) {
 }
 
 async function query(query, res){
+  console.log(`${query}`)
   res.set("X-SQL-Query", query)
   query = query.split(";")
   query = query.filter(q=>q!="")
@@ -49,7 +50,6 @@ async function query(query, res){
 }
 
 errorJokeId = 0;
-let errorsJokes = ["You done messed up my friend", "Stop messing with the gawd dang code", "ERROR DOES NOT COMPUTE"]
 let errorTranslation = {
   "21": "This error typically happens if a semi-colon is used to end a command, but there is no command after it"
 }
@@ -58,8 +58,8 @@ const errorCatcher = function (fn) {
   return function (req, res) {
       Promise.resolve(fn(req, res))
           .catch((e) => {
-              console.log(`Error on ${req.originalUrl}: ${e.toString()}`);
-              res.json({ msg: errorsJokes[(errorJokeId++)%errorsJokes.length], error: e.toString(), errorno: e.errno, hint: errorTranslation[e.errno] || "Sorry, you're on you're own for this one",  errorurl: req.originalUrl })
+              // console.log(`Error on ${req.originalUrl}: ${e.toString()}`);
+              res.render("error", { error: e.toString()})
           });
   };
 };
@@ -84,6 +84,9 @@ app.get('/add', errorCatcher(async (req, res) => {
 
 app.get('/d/', errorCatcher(async (req, res) => {
   await prepared;
+  if (req.query.id < 2){
+    throw "Error: The first 2 quotes are protected and can not be deleted, normally at least ;)"
+  }
   await query(`DELETE FROM quotes WHERE id=`+req.query.id, res)
   res.render("delete", {id: req.query.id});
 }))
@@ -95,7 +98,6 @@ app.get('/c/', errorCatcher(async(req, res) => {
     throw "author or value is blank"
   }
   let queryS = `INSERT OR REPLACE INTO quotes (id, author, value) VALUES (NULL, "${req.query.author}", "${req.query.value}");`
-  console.log(queryS)
   let result = await query(queryS, res)
   res.render("added", req.query)
 }));
@@ -103,7 +105,6 @@ app.get('/c/', errorCatcher(async(req, res) => {
 app.get("/authors", errorCatcher(async (req,res)=>{
     await prepared;
     let result = await query(`SELECT author, count(*) as count FROM quotes GROUP BY author`, res)
-    console.log(result)
     res.render("authors", {authors: result})
 }))
 
@@ -113,6 +114,4 @@ app.get('/s', errorCatcher(async (req, res) => {
   res.render("search", {data: result});
 }))
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+app.listen(port, () => {})
