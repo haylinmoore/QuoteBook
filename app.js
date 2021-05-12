@@ -18,11 +18,12 @@ async function prepare() {
 }
 const prepared = prepare();
 set("The greatest glory in living lies not in never falling, but in rising every time we fall.", "Nelson Mandela")
+set("No country can really develop unless its citizens are educated.", "Nelson Mandela")
 set("The way to get started is to quit talking and begin doing.", "Walt Disney")
 set("Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma – which is living with the results of other people's thinking.", "Steve Jobs")
+set("The only way to do great work is to love what you do.", "Steve Jobs")
+set("Your time is limited, so don't waste it living someone else's life", "Steve Jobs")
 set("If life were predictable it would cease to be life, and be without flavor.", "Eleanor Roosevelt")
-set("If you look at what you have in life, you'll always have more. If you look at what you don't have in life, you'll never have enough", "Oprah Winfrey")
-set("If you set your goals ridiculously high and it's a failure, you will fail above everyone else's success.", "James Cameron")
 set("Life is what happens when you're busy making other plans.", "John Lennon")
 set("The way to get started is to quit talking and begin doing.", "Walt Disney")
 
@@ -77,26 +78,40 @@ app.get('/', async (req, res) => {
   res.render("home", {data: result})
 })
 
-app.get('/d/', async (req, res) => {
+app.get('/add', errorCatcher(async (req, res) => {
+  res.render("add")
+}))
+
+app.get('/d/', errorCatcher(async (req, res) => {
   await prepared;
   await query(`DELETE FROM quotes WHERE id=`+req.query.id, res)
-  res.send(`Post id "${req.query.id}" has been deleted`)
-})
+  res.render("delete", {id: req.query.id});
+}))
 
 app.get('/c/', errorCatcher(async(req, res) => {
   await prepared;
-  console.log(req.query)
-  let queryS = `INSERT OR REPLACE INTO quotes (id, value, author) VALUES (NULL, "${req.query.value}", "${req.query.author}");`
+
+  if (req.query.author == "" || req.query.value == "") {
+    throw "author or value is blank"
+  }
+  let queryS = `INSERT OR REPLACE INTO quotes (id, author, value) VALUES (NULL, "${req.query.author}", "${req.query.value}");`
   console.log(queryS)
-  let quotes = await query(queryS, res)
-  res.send(JSON.stringify(quotes))
+  let result = await query(queryS, res)
+  res.render("added", req.query)
 }));
 
-app.get('/q/', async (req, res) => {
+app.get("/authors", errorCatcher(async (req,res)=>{
+    await prepared;
+    let result = await query(`SELECT author, count(*) as count FROM quotes GROUP BY author`, res)
+    console.log(result)
+    res.render("authors", {authors: result})
+}))
+
+app.get('/s', errorCatcher(async (req, res) => {
   await prepared;
-  let quotes = await query(`SELECT * FROM quotes WHERE author="${req.query.author}"`, res)
-  res.send(JSON.stringify(quotes))
-})
+  let result = await query(`SELECT * FROM quotes WHERE author="${req.query.author}"`, res)
+  res.render("search", {data: result});
+}))
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

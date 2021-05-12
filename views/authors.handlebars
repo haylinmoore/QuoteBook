@@ -1,0 +1,5 @@
+<ul class="list-group list-group-flush" style="margin-top:2em;">
+    {{#each authors}}
+    <li class="list-group-item"><a href="/s/?author={{this.author}}">{{this.author}}</a> <span style="float:right;">({{this.count}})</span></li>
+    {{/each}}
+</ul>
