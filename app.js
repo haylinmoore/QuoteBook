@@ -8,6 +8,8 @@ const fs = require("fs");
 // anything on disk
 const db = connect();
 
+let queries = [];
+
 async function prepare() {
   await db.query(sql`
     CREATE TABLE quotes (
@@ -41,6 +43,7 @@ async function set(value, author) {
 async function query(query, res, log){
   if (log !== false) {
     console.log(`${query}`)
+    queries.push(query);
   }
   res.set("X-SQL-Query", (res.get("X-SQL-QUERY")?res.get("X-SQL-QUERY")+";":"") + query)
   query = query.split(";")
@@ -85,6 +88,10 @@ app.get('/', async (req, res) => {
   res.render("home", {old: result[0][0], recent: result[1][0], most: result[2][0], count: result[3][0].count})
 })
 
+app.get(`/restart/${process.env.restart || ""}`, async(req, res)=>{
+  process.exit(1)
+})
+
 app.get('/add', errorCatcher(async (req, res) => {
   res.render("add")
 }))
@@ -97,6 +104,10 @@ app.get('/d/', errorCatcher(async (req, res) => {
   await query(`DELETE FROM quotes WHERE id=`+req.query.id, res)
   res.render("delete", {id: req.query.id});
 }))
+
+app.get('/queries', errorCatcher(async(req, res)=>{
+  res.render("queries", {queries})
+}));
 
 app.get('/c/', errorCatcher(async(req, res) => {
   await prepared;
