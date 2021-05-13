@@ -3,6 +3,7 @@ WORKDIR /app
 COPY package.json .
 COPY package-lock.json .
 RUN npm install
+COPY quotes.txt .
 COPY . .
 
 CMD [ "npm", "start" ]

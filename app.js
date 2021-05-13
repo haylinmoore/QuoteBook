@@ -79,9 +79,10 @@ app.get('/', async (req, res) => {
   let result = await Promise.all([
       query(`SELECT * FROM quotes WHERE id=1`, res, false),
       query(`SELECT * FROM quotes ORDER BY id DESC LIMIT 1`, res, false),
-      query(`SELECT author, count(*) as count FROM quotes GROUP BY author ORDER BY count desc LIMIT 1`, res, false)
+      query(`SELECT author, count(*) as count FROM quotes GROUP BY author ORDER BY count desc LIMIT 1`, res, false),
+      query(`SELECT count(*) as count FROM quotes`, res, false),
   ])
-  res.render("home", {old: result[0][0], recent: result[1][0], most: result[2][0]})
+  res.render("home", {old: result[0][0], recent: result[1][0], most: result[2][0], count: result[3][0].count})
 })
 
 app.get('/add', errorCatcher(async (req, res) => {
