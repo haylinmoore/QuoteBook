@@ -2,6 +2,7 @@ const connect = require('@databases/sqlite');
 const {sql} = require('@databases/sqlite');
 const express = require('express')
 const exphbs  = require('express-handlebars');
+const fs = require("fs");
 
 // We don't pass a file name here because we don't want to store
 // anything on disk
@@ -17,16 +18,15 @@ async function prepare() {
   `);
 }
 const prepared = prepare();
-set("The greatest glory in living lies not in never falling, but in rising every time we fall.", "Nelson Mandela")
-set("No country can really develop unless its citizens are educated.", "Nelson Mandela")
-set("The way to get started is to quit talking and begin doing.", "Walt Disney")
-set("Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma – which is living with the results of other people's thinking.", "Steve Jobs")
-set("The only way to do great work is to love what you do.", "Steve Jobs")
-set("Your time is limited, so don't waste it living someone else's life", "Steve Jobs")
-set("If life were predictable it would cease to be life, and be without flavor.", "Eleanor Roosevelt")
-set("Life is what happens when you're busy making other plans.", "John Lennon")
-set("The way to get started is to quit talking and begin doing.", "Walt Disney")
 
+const data = fs.readFileSync('./quotes.txt', {encoding:'utf8', flag:'r'});
+data.split("\n").forEach((q)=>{
+  if (q == ""){
+    return;
+  }
+  let split = q.split("-");
+  set(split[0], split[1]);
+})
 
 async function set(value, author) {
   await prepared;
@@ -38,9 +38,11 @@ async function set(value, author) {
   `);
 }
 
-async function query(query, res){
-  console.log(`${query}`)
-  res.set("X-SQL-Query", query)
+async function query(query, res, log){
+  if (log !== false) {
+    console.log(`${query}`)
+  }
+  res.set("X-SQL-Query", (res.get("X-SQL-QUERY")?res.get("X-SQL-QUERY")+";":"") + query)
   query = query.split(";")
   query = query.filter(q=>q!="")
   query = query.map(q=>{return db.query(sql(q))});
@@ -74,8 +76,12 @@ app.set('view engine', 'handlebars');
 
 app.get('/', async (req, res) => {
   await prepared;
-  let result = await query(`SELECT * FROM quotes`, res)
-  res.render("home", {data: result})
+  let result = await Promise.all([
+      query(`SELECT * FROM quotes WHERE id=1`, res, false),
+      query(`SELECT * FROM quotes ORDER BY id DESC LIMIT 1`, res, false),
+      query(`SELECT author, count(*) as count FROM quotes GROUP BY author ORDER BY count desc LIMIT 1`, res, false)
+  ])
+  res.render("home", {old: result[0][0], recent: result[1][0], most: result[2][0]})
 })
 
 app.get('/add', errorCatcher(async (req, res) => {
@@ -104,7 +110,7 @@ app.get('/c/', errorCatcher(async(req, res) => {
 
 app.get("/authors", errorCatcher(async (req,res)=>{
     await prepared;
-    let result = await query(`SELECT author, count(*) as count FROM quotes GROUP BY author`, res)
+    let result = await query(`SELECT author, count(*) as count FROM quotes GROUP BY author ORDER BY author asc`, res)
     res.render("authors", {authors: result})
 }))
 

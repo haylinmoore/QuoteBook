@@ -1,15 +1,21 @@
-<div class="row justify-content-center row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
-{{#each data}}
-<div class="col  align-items-stretch d-flex" style="margin-top: 24px;">
-    <div class="card">
-  <div class="card-body">
-    <p class="card-text">{{this.value}}</p>
-  </div>
-    <div class="card-footer">
-        <a href="/s/?author={{this.author}}">{{this.author}}</a>
-        <a href="/d/?id={{this.id}}" style="float:right;">x</a>
+<div class="row align-items-start">
+    <div class="col">
+        Hello! Welcome to QuoteBook!
+        We are the number <strong>one</strong> source for great quotes by great people!
+        All quotes on this site are <strong>handpicked</strong> by either our staff or <strong>amazing</strong> viewers like you!
+        On the right you can see various quotes, discover more by clicking the "Authors" button on the top right.
+        If you think we are missing a good quote you can add it by clicking "Add Quote".
+        <br><br>
+        We hope you enjoy QuoteBook - The Wonderful<strike>ly</strike> <strike>Underpaid</strike> Staff At QuoteBook
+
     </div>
+    <div class="col">
+        <h4>Most recent quote</h4>
+        {{recent.value}} - <a href="/s/?author={{recent.author}}">{{recent.author}}</a>
+        <h4 style="margin-top: 1em">Oldest quote</h4>
+        {{old.value}} - <a href="/s/?author={{old.author}}">{{old.author}}</a>
+        <h4 style="margin-top: 1em">Author with Most Quotes</h4>
+        <a href="/s/?author={{most.author}}">{{most.author}}</a> has the most quotes at a massive {{most.count}}
     </div>
-</div>
-{{/each}}
+
 </div>
