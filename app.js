@@ -27,7 +27,7 @@ data.split("\n").forEach((q)=>{
     return;
   }
   let split = q.split("-");
-  set(split[0], split[1]);
+  set(split.slice(0, split.length-1).join("-"), split[split.length-1]);
 })
 
 async function set(value, author) {

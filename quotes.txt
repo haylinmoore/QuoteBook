@@ -41,3 +41,18 @@ I don’t want life to imitate art. I want life to be art.-Carrie Fisher
 Sometimes you can only find Heaven by slowly backing away from Hell.-Carrie Fisher
 Take your broken heart, make it into art.-Carrie Fisher
 When life gives you lemons, don’t make lemonade. Make life take the lemons back! Get mad! I don’t want your damn lemons, what the hell am I supposed to do with these? Demand to see life’s manager! Make life rue the day it thought it could give Cave Johnson lemons! Do you know who I am? I’m the man who’s gonna burn your house down! With the lemons! I’m gonna get my engineers to invent a combustible lemon that burns your house down!-Cave Johnson
+remature optimization is the root of all evil (or at least most of it) in programming.-Donald Knuth
+Always remember, however, that there’s usually a simpler and better way to do something than the first way that pops into your head.-Donald Knuth
+If you optimize everything, you will always be unhappy.-Donald Knuth
+A list is only as strong as its weakest link.-Donald Knuth
+Beware of bugs in the above code; I have only proved it correct, not tried it.-Donald Knuth
+Everyday life is like programming, I guess. If you love something you can put beauty into it.-Donald Knuth
+I'm obsessively detail-oriented.-Donald Knuth
+There's ways to amuse yourself while doing things and thats how I look at efficency.-Donald Knuth
+Computers are good at following instructions, but not at reading your mind.-Donald Knuth
+Programs are meant to be read by humans and only incidentally for computers to execute.-Donald Knuth  
+This country will not be a good place for any of us to live in unless we make it a good place for all of us to live in.-Theodore Roosevelt 
+Knowing what's right doesn't mean much unless you do what's right.-Theodore Roosevelt 
+You can't choose your potential, but you can choose to fulfill it.-Theodore Roosevelt 
+To educate a man in mind and not in morals is to educate a menace to society.-Theodore Roosevelt 
+There really is no learning without doing.-Roger Schank
