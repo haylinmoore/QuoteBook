@@ -128,8 +128,26 @@ app.get("/authors", errorCatcher(async (req,res)=>{
 
 app.get('/s', errorCatcher(async (req, res) => {
   await prepared;
-  let result = await query(`SELECT * FROM quotes WHERE author="${req.query.author}"`, res)
-  res.render("search", {data: result});
+  let parts = []
+  if (req.query.author != undefined && req.query.query == undefined){
+    let result = await query(`SELECT * FROM quotes WHERE author LIKE "%${req.query.author}%"`, res)
+    res.render("search", {data: result});
+  }
+  else if (req.query.author != undefined && req.query.query != undefined){
+    let result = await query(`SELECT * FROM quotes WHERE author LIKE "%${req.query.author}%" and value like "%${req.query.query}%"`, res)
+    res.render("search", {data: result});
+  }
+  else if (req.query.author == undefined && req.query.query != undefined){
+    let result = await query(`SELECT * FROM quotes WHERE author LIKE "%${req.query.query}%" or value like "%${req.query.query}%"`, res)
+    res.render("search", {data: result});
+  }
+  else {
+    res.render("error", {error: "No query parameter specified, 'author' or 'query' required."})
+  }
+
+  
 }))
 
-app.listen(port, () => {})
+app.listen(port, () => {
+  console.log(`QuoteBook has been started running on port ${port} - Commence the madness`);
+})
